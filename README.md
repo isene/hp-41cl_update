@@ -16,6 +16,7 @@ PILbox:  http://www.jeffcalc.hp41.eu/hpil/#pilbox
 
 ## OPTIONS
 -h, --help	Show this help text
+
 -v, --version  Show the version of HP-41CL_update.rb
 
 ## EXAMPLE
