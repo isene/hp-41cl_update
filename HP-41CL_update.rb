@@ -12,7 +12,7 @@ NAME
     HP-41CL_update.rb - A tool to update ROMS on the HP-41CL calculator
 
 SYNOPSIS
-    HP-41CL_update.rb [ -h ] [long-options]
+    HP-41CL_update.rb [-hv] [long-options]
 
 DESCRIPTION
     HP-41CL_update.rb takes HP-41 ROM files from a folder named "roms"
