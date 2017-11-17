@@ -10,7 +10,7 @@ pyILPer: https://github.com/bug400/pyilper
 
 PILbox:  http://www.jeffcalc.hp41.eu/hpil/#pilbox
 
-Running the HP-41CL_update...
+Running the HP-41CL_update.rb...
 
 ![Alt text](docs/2017-11-17-224051_693x136_scrot.png?raw=true "Top Dir")
 
