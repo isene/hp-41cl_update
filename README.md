@@ -1,9 +1,6 @@
 # hp-41cl_update
 A tool to update ROMS on the HP-41CL calculator via HP-IL (Linux only)
 
-## SYNOPSIS
-HP-41CL_update.rb [-hv] [long-options]
-
 ## DESCRIPTION
 HP-41CL_update.rb takes HP-41 ROM files from a folder named "roms" and adds those to a LIF file that can be mounted by pyILPer. The pyILPer is a Java program that can mount LIF files so that an HP-41 can access that file via a PILbox. The "roms" folder must reside in the same folder as the HP-41CL_update.rb program. The file names of the ROMs to be updated must be prefixed with the HP-41CL address so that the FOCAL program knows where in flash to update the ROMs (only the first three hex numbers are inserted at the beginning of the file name).
 
@@ -12,6 +9,9 @@ Example: You want to update the ISENE.ROM on your HP-41CL. The ISENE.ROM should 
 pyILPer: https://github.com/bug400/pyilper
 
 PILbox:  http://www.jeffcalc.hp41.eu/hpil/#pilbox
+
+## SYNOPSIS
+HP-41CL_update.rb [-hv] [long-options]
 
 ## OPTIONS
 -h, --help	Show this help text
