@@ -10,6 +10,17 @@ pyILPer: https://github.com/bug400/pyilper
 
 PILbox:  http://www.jeffcalc.hp41.eu/hpil/#pilbox
 
+Running the HP-41CL_update...
+
+![Alt text](docs/2017-11-17-224051_693x136_scrot.png?raw=true "Top Dir")
+
+...takes all the ROMs in the "roms" directory, and adds them to the LIF image, "cl_update.lif", including the index file, "roms1.txt" which contains the needed info used by the HP-41 FOCAL program, "FUPDATE.41" to actually update the CL flash. The "roms1.txt" looks like this:
+
+![Alt text](docs/2017-11-17-224116_690x460_scrot.png?raw=true "roms Dir")
+
+If you want to update more than 256 ROMs at a time, the index will split into two files, "roms1.txt" and "roms2.txt" in order for each index file to fit into the HP-41CL's XM memory. The FOCAL program, FUPDATE will run through "roms1.txt" before checking if there is a "roms2.txt" and run that if it exists.
+
+
 ## SYNOPSIS
 HP-41CL_update.rb [-hv] [long-options]
 
