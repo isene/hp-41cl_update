@@ -90,7 +90,7 @@ end
 
 romscheme = romscheme.sort
 
-# Split the romlist if it is larger than 256 entries (includes "empty entries"
+# Split the romlist if it is larger than 256 entries (includes "empty entries")
 if romscheme.size > 256
 	largelist = romscheme.insert(256,"---").flatten.join("\n").split("---\n")
 	roms1 = largelist[0]
