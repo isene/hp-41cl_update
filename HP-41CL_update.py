@@ -5,7 +5,8 @@
 # Lisence: GPL2
 # 
 # This is my first Python program. I welcome any and all suggestions and improvements.
-# I usually program in Ruby. First impression: Ruby is more elegant.
+# I usually program in Ruby. First impression: Ruby is more elegant - even
+# though it resembles HyperList (https://isene.me/hyperlist/) with its indenting. 
 
 ver="0.2"
 
