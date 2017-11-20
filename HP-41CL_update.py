@@ -13,14 +13,24 @@ ver="0.2"
 import optparse
 import os
 
-desc="""HP-41CL_update.rb takes HP-41 ROM files from a folder named "roms" and adds those to a LIF file that can be mounted by pyILPer. The pyILPer is a Java program that can mount LIF files so that an HP-41 can access that file via a PILbox. The "roms" folder must reside in the same folder as the HP-41CL_update.rb program. For pyILPer, see https://github.com/bug400/pyilper and for PILbo, see: http://www.jeffcalc.hp41.eu/hpil/#pilbox. Program is copyright 2017, Geir Isene (http://isene.com/) and released under the GPL2 license."""
+desc="""HP-41CL_update.rb takes HP-41 ROM files from a folder named "roms" and adds those to a LIF file that can be mounted by pyILPer. The pyILPer is a Java program that can mount LIF files so that an HP-41 can access that file via a PILbox. The "roms" folder must reside in the same folder as the HP-41CL_update.rb program. The ROM names must be prefixed with the first three hexadecimal numbers of the HP-41CL flash adress where you want the rom to reside. Example: Rename ISENE.ROM to 0C9ISENE.ROM (as the rom should be placed in the address 0C9000 in the HP-41CL flash. 
 
-parser = optparse.OptionParser(version="%prog version: " + ver, description=desc)
-(opts, args) = parser.parse_args()
+For pyILPer, see https://github.com/bug400/pyilper
+For PILbox, see: http://www.jeffcalc.hp41.eu/hpil/#pilbox. 
 
-# Initialize variables
+Program is copyright 2017, Geir Isene (http://isene.com/) and released under the GPL2 license."""
+
+# Define directory for roms
 basedir   = os.path.dirname(os.path.realpath(__file__))
 romdir    = basedir + "/roms"
+
+parser = optparse.OptionParser(version="%prog version: " + ver, description=desc)
+parser.add_option('-r', '--romdir', dest="romdir", default=romdir)
+(opts, args) = parser.parse_args()
+
+romdir	  = opts.romdir
+
+# Initialize variables
 romscheme = {}
 roms1     = ""
 roms2     = ""
@@ -57,8 +67,10 @@ for filename in os.listdir(romdir):
 	romscheme[romblockname][romplace] = romname
 
 	# Convert the ROM and add it to the LIF file with system commands
-	os.system("cat " + romdir + "/" + filename + " | rom41hx " + romname + " > " + romdir + "/" + romname + ".sda")
-	os.system("lifput " + basedir + "/cl_update.lif " + romdir + "/" + romname + ".sda")
+	#os.system("cat " + romdir + "/" + filename + " | rom41hx " + romname + " > " + romdir + "/" + romname + ".sda")
+	#os.system("lifput " + basedir + "/cl_update.lif " + romdir + "/" + romname + ".sda")
+	os.system("cat " + romdir + "/" + filename + " | romlif " + romname + " | lifput " + basedir + "/cl_update.lif")
+	`cat #{romdir}/#{dir_entry} | romlif #{romname} | lifput #{basedir}/cl_update.lif`
         continue
     else:
         continue

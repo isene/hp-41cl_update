@@ -21,10 +21,18 @@ DESCRIPTION
     can access that file via a PILbox. The "roms" folder must reside
     in the same folder as the HP-41CL_update.rb program.
 
+	The ROM names must be prefixed with the first three hexadecimal
+	numbers of the HP-41CL flash adress where you want the rom to reside.
+	Example: Rename ISENE.ROM to 0C9ISENE.ROM (as the rom should be 
+	placed in the address 0C9000 in the HP-41CL flash.
+
     pyILPer: https://github.com/bug400/pyilper
     PILbox:  http://www.jeffcalc.hp41.eu/hpil/#pilbox
 
 OPTIONS
+	-r, --romdir
+		Specify the "roms" directory/folder for the rom files
+		Default is the "roms" folder where the HP-41CL_update.rb resides
     -h, --help
     	Show this help text
     -v, --version
@@ -42,23 +50,31 @@ HELPTEXT
 end
 
 opts = GetoptLong.new(
-    [ "--help",             "-h",   GetoptLong::NO_ARGUMENT ],
-    [ "--version",          "-v",   GetoptLong::NO_ARGUMENT ]
+    [ "--romdir",  "-r",   GetoptLong::NO_ARGUMENT ],
+    [ "--help",     "-h",   GetoptLong::NO_ARGUMENT ],
+    [ "--version",  "-v",   GetoptLong::NO_ARGUMENT ]
 )
+
+basedir = File.expand_path(File.dirname(__FILE__))
+romdir  = basedir + "/roms"
 
 opts.each do |opt, arg|
   case opt
+    when "--romdir"
+	  if not ARGV[0]
+		puts "No roms dir specified."
+		exit
+	  end
+	  romdir = ARGV[0]
     when "--help"
       help
       exit
     when "--version"
-		puts "\nHP-41CL_update.rb version: " + prgmversion.to_s + "\n\n"
+	  puts "\nHP-41CL_update.rb version: " + prgmversion.to_s + "\n\n"
       exit
   end
 end
 
-basedir = File.expand_path(File.dirname(__FILE__))
-romdir  = basedir + "/roms"
 romscheme = Hash.new
 roms1 = ""
 roms2 = ""
@@ -82,9 +98,9 @@ Dir.foreach(romdir) do |dir_entry|
 		romscheme[romblockname][romplace] = romname
 
 		# Convert the ROM and add it to the LIF file with system commands (using "backticks")
-		`cat #{romdir}/#{dir_entry} | rom41hx #{romname} > #{romdir}/#{romname}.sda`
-		`lifput #{basedir}/cl_update.lif #{romdir}/#{romname}.sda`
-		#`cat #{romdir}/#{dir_entry} | romlif #{romname} | lifput #{basedir}/cl_update.lif`
+		#`cat #{romdir}/#{dir_entry} | rom41hx #{romname} > #{romdir}/#{romname}.sda`
+		#`lifput #{basedir}/cl_update.lif #{romdir}/#{romname}.sda`
+		`cat #{romdir}/#{dir_entry} | romlif #{romname} | lifput #{basedir}/cl_update.lif`
 	end
 end
 
