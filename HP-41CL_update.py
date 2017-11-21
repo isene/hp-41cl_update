@@ -8,7 +8,7 @@
 # I usually program in Ruby. First impression: Ruby is more elegant - even
 # though it resembles HyperList (https://isene.me/hyperlist/) with its indenting. 
 
-ver="0.2"
+ver="0.3"
 
 import optparse
 import os
