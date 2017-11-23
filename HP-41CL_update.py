@@ -69,7 +69,7 @@ for filename in os.listdir(romdir):
 	# Convert the ROM and add it to the LIF file with system commands
 	#os.system("cat " + romdir + "/" + filename + " | rom41hx " + romname + " > " + romdir + "/" + romname + ".sda")
 	#os.system("lifput " + basedir + "/cl_update.lif " + romdir + "/" + romname + ".sda")
-	os.system("cat " + romdir + "/" + filename + " | romlif " + romname + " | lifput " + basedir + "/cl_update.lif")
+	os.system("cat " + romdir + "/" + filename + " | rom41lif " + romname + " | lifput " + basedir + "/cl_update.lif")
 	`cat #{romdir}/#{dir_entry} | romlif #{romname} | lifput #{basedir}/cl_update.lif`
         continue
     else:

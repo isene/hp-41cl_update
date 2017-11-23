@@ -100,7 +100,7 @@ Dir.foreach(romdir) do |dir_entry|
 		# Convert the ROM and add it to the LIF file with system commands (using "backticks")
 		#`cat #{romdir}/#{dir_entry} | rom41hx #{romname} > #{romdir}/#{romname}.sda`
 		#`lifput #{basedir}/cl_update.lif #{romdir}/#{romname}.sda`
-		`cat #{romdir}/#{dir_entry} | romlif #{romname} | lifput #{basedir}/cl_update.lif`
+		`cat #{romdir}/#{dir_entry} | rom41lif #{romname} | lifput #{basedir}/cl_update.lif`
 	end
 end
 
