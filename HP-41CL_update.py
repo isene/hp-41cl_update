@@ -23,12 +23,15 @@ Program is copyright 2017, Geir Isene (http://isene.com/) and released under the
 # Define directory for roms
 basedir   = os.path.dirname(os.path.realpath(__file__))
 romdir    = basedir + "/roms"
+hepax     = False
 
 parser = optparse.OptionParser(version="%prog version: " + ver, description=desc)
-parser.add_option('-r', '--romdir', dest="romdir", default=romdir)
+parser.add_option('-x', '--hepax', action="store_true", help="Add the ROM(s) into the LIF image as a HEPAX SDATA file. Must be read into the HP-41CL using the HEPAX 'READROM' function.")
+parser.add_option('-r', '--romdir', dest="romdir", default=romdir, help="Specify the roms directory/folder for the rom files. Default is the roms folder where the HP-41CL_update.rb resides")
 (opts, args) = parser.parse_args()
 
 romdir	  = opts.romdir
+hepax     = opts.hepax
 
 # Initialize variables
 romscheme = {}
@@ -49,6 +52,10 @@ def flatten(dic):
 os.system("touch " + basedir + "/cl_update.lif")
 os.system("lifinit -m hdrive16 " + basedir + "/cl_update.lif 520")
 
+if not os.path.exists(romdir):
+    print "No such roms directory:\n", romdir
+    exit()
+
 # Run through all ROMs in the "roms" directory and add them to the LIF image
 for filename in os.listdir(romdir):
     if filename.upper().endswith(".ROM") and os.path.getsize(romdir + "/" + filename) == 8192:
@@ -67,10 +74,11 @@ for filename in os.listdir(romdir):
 	romscheme[romblockname][romplace] = romname
 
 	# Convert the ROM and add it to the LIF file with system commands
-	#os.system("cat " + romdir + "/" + filename + " | rom41hx " + romname + " > " + romdir + "/" + romname + ".sda")
-	#os.system("lifput " + basedir + "/cl_update.lif " + romdir + "/" + romname + ".sda")
-	os.system("cat " + romdir + "/" + filename + " | rom41lif " + romname + " | lifput " + basedir + "/cl_update.lif")
-	`cat #{romdir}/#{dir_entry} | romlif #{romname} | lifput #{basedir}/cl_update.lif`
+        if hepax:
+            os.system("cat " + romdir + "/" + filename + " | rom41hx " + romname + " > " + romdir + "/" + romname + ".sda")
+            os.system("lifput " + basedir + "/cl_update.lif " + romdir + "/" + romname + ".sda")
+        else:
+	    os.system("cat " + romdir + "/" + filename + " | rom41lif " + romname + " | lifput " + basedir + "/cl_update.lif")
         continue
     else:
         continue
@@ -91,4 +99,6 @@ file.write(roms1)
 os.system("cat " + romdir + "/roms1.txt | textlif ROMS1 | lifput " + basedir + "/cl_update.lif")
 
 # Clean up
-os.system("rm " + romdir + "/*.sda")
+if hepax:
+    os.system("rm " + romdir + "/*.sda")
+

@@ -33,6 +33,9 @@ OPTIONS
 	-r, --romdir
 		Specify the "roms" directory/folder for the rom files
 		Default is the "roms" folder where the HP-41CL_update.rb resides
+	-x, --hepax
+		Add the ROM(s) into the LIF image as a HEPAX SDATA file
+		Must be read into the HP-41CL using the HEPAX "READROM" function
     -h, --help
     	Show this help text
     -v, --version
@@ -50,13 +53,15 @@ HELPTEXT
 end
 
 opts = GetoptLong.new(
-    [ "--romdir",  "-r",   GetoptLong::NO_ARGUMENT ],
+    [ "--romdir",   "-r",   GetoptLong::NO_ARGUMENT ],
+    [ "--hepax",    "-x",   GetoptLong::NO_ARGUMENT ],
     [ "--help",     "-h",   GetoptLong::NO_ARGUMENT ],
     [ "--version",  "-v",   GetoptLong::NO_ARGUMENT ]
 )
 
 basedir = File.expand_path(File.dirname(__FILE__))
 romdir  = basedir + "/roms"
+hepax = false
 
 opts.each do |opt, arg|
   case opt
@@ -66,6 +71,8 @@ opts.each do |opt, arg|
 		exit
 	  end
 	  romdir = ARGV[0]
+	when "--hepax"
+	  hepax = true
     when "--help"
       help
       exit
@@ -83,6 +90,11 @@ roms2 = ""
 `touch #{basedir}/cl_update.lif`
 `lifinit -m hdrive16 #{basedir}/cl_update.lif 520`										# Max ROMS is 512
 
+if not Dir.exists?(romdir)
+	puts "No such roms directory:", romdir
+	exit
+end
+
 Dir.foreach(romdir) do |dir_entry|
 	if dir_entry =~ /\.rom$/i and File.size(romdir + "/" + dir_entry) == 8192
 		romentry = dir_entry.sub(/\..*$/, '').upcase									# e.g. "0C9ISENE"
@@ -98,9 +110,12 @@ Dir.foreach(romdir) do |dir_entry|
 		romscheme[romblockname][romplace] = romname
 
 		# Convert the ROM and add it to the LIF file with system commands (using "backticks")
-		#`cat #{romdir}/#{dir_entry} | rom41hx #{romname} > #{romdir}/#{romname}.sda`
-		#`lifput #{basedir}/cl_update.lif #{romdir}/#{romname}.sda`
-		`cat #{romdir}/#{dir_entry} | rom41lif #{romname} | lifput #{basedir}/cl_update.lif`
+		if hepax
+			`cat #{romdir}/#{dir_entry} | rom41hx #{romname} > #{romdir}/#{romname}.sda`
+			`lifput #{basedir}/cl_update.lif #{romdir}/#{romname}.sda`
+		else
+			`cat #{romdir}/#{dir_entry} | rom41lif #{romname} | lifput #{basedir}/cl_update.lif`
+		end
 	end
 end
 
@@ -125,5 +140,6 @@ if roms2 != ""
 end
 
 # Clean up
-`rm #{romdir}/*.sda`
+`rm #{romdir}/*.sda` if hepax
+
 
