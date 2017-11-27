@@ -3,7 +3,7 @@
 
 require 'getoptlong'
 
-prgmversion = 0.3
+prgmversion = 0.4
 
 def help
 puts <<HELPTEXT
@@ -41,9 +41,6 @@ OPTIONS
     -v, --version
         Show the version of HP-41CL_update.rb
 
-EXAMPLE
-    No examples as of yet.
-    
 COPYRIGHT:
     Copyright 2017, Geir Isene (www.isene.com)
     This program is released under the GNU General Public lisence v2
@@ -53,26 +50,26 @@ HELPTEXT
 end
 
 opts = GetoptLong.new(
-    [ "--romdir",   "-r",   GetoptLong::NO_ARGUMENT ],
-    [ "--hepax",    "-x",   GetoptLong::NO_ARGUMENT ],
-    [ "--help",     "-h",   GetoptLong::NO_ARGUMENT ],
-    [ "--version",  "-v",   GetoptLong::NO_ARGUMENT ]
+    [ "--hepax",    "-x", GetoptLong::NO_ARGUMENT ],
+    [ "--romdir",   "-r", GetoptLong::NO_ARGUMENT ],
+    [ "--help",     "-h", GetoptLong::NO_ARGUMENT ],
+    [ "--version",  "-v", GetoptLong::NO_ARGUMENT ]
 )
 
 basedir = File.expand_path(File.dirname(__FILE__))
 romdir  = basedir + "/roms"
-hepax = false
+hepax	= false
 
 opts.each do |opt, arg|
   case opt
+	when "--hepax"
+	  hepax = true
     when "--romdir"
 	  if not ARGV[0]
 		puts "No roms dir specified."
 		exit
 	  end
 	  romdir = ARGV[0]
-	when "--hepax"
-	  hepax = true
     when "--help"
       help
       exit
@@ -99,7 +96,8 @@ Dir.foreach(romdir) do |dir_entry|
 	if dir_entry =~ /\.rom$/i and File.size(romdir + "/" + dir_entry) == 8192
 		romentry = dir_entry.sub(/\..*$/, '').upcase									# e.g. "0C9ISENE"
 		romname = romentry.sub(/^.../, '')												# "ISENE"
-		romlocation = romentry[0..2].upcase												# "0C9"
+		romname = romname.gsub(/[^0-9A-Z]/, '')[0..7]									# Remove non-alphanumerinc characters, max 8 chars
+		romlocation = romentry[0..2]													# "0C9"
 		romblock = ((romlocation.to_i(16) / 8).to_i * 8).to_s(16).rjust(3, "0").upcase	# "0C8"
 		next if romblock == "000" or romblock == "1F8"									# Drop updating system or single rom area
 		romplace = romlocation.to_i(16) - romblock.to_i(16)								# 1 (0C9 - 0C8)
@@ -142,4 +140,6 @@ end
 # Clean up
 `rm #{romdir}/*.sda` if hepax
 
+# End message
+puts "ROMs added to cl_update.lif. Check roms1.txt (and roms2.txt if more than 256 roms added) for all entries added."
 
