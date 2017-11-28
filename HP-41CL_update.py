@@ -8,11 +8,12 @@
 # I usually program in Ruby. First impression: Ruby is more elegant - even
 # though it resembles HyperList (https://isene.me/hyperlist/) with its indenting. 
 
-ver="0.4"
+ver="0.5"
 
 import optparse
 import os
 import re
+import string
 
 desc="""HP-41CL_update.rb takes HP-41 ROM files from a folder named "roms" and adds those to a LIF file that can be mounted by pyILPer. The pyILPer is a Java program that can mount LIF files so that an HP-41 can access that file via a PILbox. The "roms" folder must reside in the same folder as the HP-41CL_update.rb program. The ROM names must be prefixed with the first three hexadecimal numbers of the HP-41CL flash adress where you want the rom to reside. Example: Rename ISENE.ROM to 0C9ISENE.ROM (as the rom should be placed in the address 0C9000 in the HP-41CL flash. 
 
@@ -65,8 +66,8 @@ for filename in os.listdir(romdir):
         romname = re.sub("[^0-9A-Z]", "", romname)[0:8]                                 # Remove non-alphanumerinc characters, max 8 chars
 	romlocation = romentry[:3]							# "0C9"
 	romblock = hex(int(romlocation, 16) / 8 * 8).split("x")[-1].zfill(3).upper()	# "0C8"
-	if romblock == "000" or romblock == "1F8":					# Drop updating system or single rom area
-	    continue
+        if not all(c in string.hexdigits for c in romblock): continue                   # Drop bogus files
+	if int(romblock, 16) == 0 or int(romblock, 16) >= 504: continue			# Drop updating system or single rom area
 	romplace = int(romlocation, 16) - int(romblock, 16)				# 1 (0C9 - 0C8)
 	romblockname = romblock.ljust(6, '0')						# "0C8000"
 
@@ -92,13 +93,13 @@ if len(romscheme) > 64:
     roms2 = flatten(dict(romscheme.items()[:64]))
     file = open(romdir + "/roms2.txt","w") 
     file.write(roms2)
-    os.system("cat " + romdir + "/roms2.txt | textlif ROMS2 | lifput " + basedir + "/cl_update.lif")
+    os.system("cat " + romdir + "/roms2.txt | textlif -r 0 ROMS2 | lifput " + basedir + "/cl_update.lif")
 else:
     roms1 = flatten(romscheme)
 
 file = open(romdir + "/roms1.txt","w")
 file.write(roms1)
-os.system("cat " + romdir + "/roms1.txt | textlif ROMS1 | lifput " + basedir + "/cl_update.lif")
+os.system("cat " + romdir + "/roms1.txt | textlif -r 0 ROMS1 | lifput " + basedir + "/cl_update.lif")
 
 # Clean up
 if hepax:

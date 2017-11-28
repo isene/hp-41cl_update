@@ -3,7 +3,7 @@
 
 require 'getoptlong'
 
-prgmversion = 0.4
+prgmversion = 0.5
 
 def help
 puts <<HELPTEXT
@@ -15,16 +15,16 @@ SYNOPSIS
     HP-41CL_update.rb [-hv] [long-options]
 
 DESCRIPTION
-    HP-41CL_update.rb takes HP-41 ROM files from a folder named "roms"
-    and adds those to a LIF file that can be mounted by pyILPer. The
-    pyILPer is a Java program that can mount LIF files so that an HP-41
-    can access that file via a PILbox. The "roms" folder must reside
-    in the same folder as the HP-41CL_update.rb program.
+	HP-41CL_update.rb takes HP-41 ROM files from a folder named "roms" and
+	adds those to a LIF file that can be mounted by pyILPer. The pyILPer
+	is a Java program that can mount LIF files so that an HP-41 can access
+	that file via a PILbox. The "roms" folder must reside in the same
+	folder as the HP-41CL_update.rb program.
 
 	The ROM names must be prefixed with the first three hexadecimal
 	numbers of the HP-41CL flash adress where you want the rom to reside.
-	Example: Rename ISENE.ROM to 0C9ISENE.ROM (as the rom should be 
-	placed in the address 0C9000 in the HP-41CL flash.
+	Example: Rename ISENE.ROM to 0C9ISENE.ROM (as the rom should be placed
+	in the address 0C9000 in the HP-41CL flash.
 
     pyILPer: https://github.com/bug400/pyilper
     PILbox:  http://www.jeffcalc.hp41.eu/hpil/#pilbox
@@ -99,7 +99,7 @@ Dir.foreach(romdir) do |dir_entry|
 		romname = romname.gsub(/[^0-9A-Z]/, '')[0..7]									# Remove non-alphanumerinc characters, max 8 chars
 		romlocation = romentry[0..2]													# "0C9"
 		romblock = ((romlocation.to_i(16) / 8).to_i * 8).to_s(16).rjust(3, "0").upcase	# "0C8"
-		next if romblock == "000" or romblock == "1F8"									# Drop updating system or single rom area
+		next if romblock.to_i(16) == 0 or romblock.to_i(16) >= 504						# Drop bogus files. And no updating system or single rom area
 		romplace = romlocation.to_i(16) - romblock.to_i(16)								# 1 (0C9 - 0C8)
 		romblockname = romblock.ljust(6, "0")											# "0C8000"
 
@@ -130,11 +130,11 @@ end
 
 # Create and add the romlist as an XM ascii file to the LIF image
 File.write("#{romdir}/roms1.txt", roms1)
-`cat #{romdir}/roms1.txt | textlif ROMS1 | lifput #{basedir}/cl_update.lif`
+`cat #{romdir}/roms1.txt | textlif -r 0 ROMS1 | lifput #{basedir}/cl_update.lif`
 # If the romlist is large and split into two, write and save also the second part
 if roms2 != ""
 	File.write("#{romdir}/roms2.txt", roms2) 
-	`cat #{romdir}/roms2.txt | textlif ROMS2 | lifput #{basedir}/cl_update.lif`
+	`cat #{romdir}/roms2.txt | textlif -r 0 ROMS2 | lifput #{basedir}/cl_update.lif`
 end
 
 # Clean up

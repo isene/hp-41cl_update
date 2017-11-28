@@ -6,12 +6,13 @@ You need the following to run this update solution:
 - A PC with Linux, MAC OS/X or BSD system
 - An HP-41CL calculator (http://www.systemyde.com/hp41/index.html)
 - A PILbox (http://www.jeffcalc.hp41.eu/hpil/#pilbox)
+- Lifutils (https://github.com/bug400/lifutils)
 - The pyILPer program (https://github.com/bug400/pyilper)
 - The "41CL Update Functions -3B" module (http://www.systemyde.com/hp41/software.html)
 - The HEPAX module (for running the "Initialization process" - see below)
 
 ## DESCRIPTION
-There are two alternative programs on the PC side, both doing exactly the same: "HP-41CL_update.rb" is the Ruby version, while "HP-41CL_update.py" is the Python equivalent. There is one FOCAL program on the HP-41CL side, "FUPDATE".
+There are two alternative programs on the PC side, both doing exactly the same: "HP-41CL_update.rb" is the Ruby version, while "HP-41CL_update.py" is the Python equivalent. There is one FOCAL program on the HP-41CL side, "FUPDATE". HP-41CL_update.rb/HP-41CL_update.py uses Lifutils to format and put ROMs and index file(s) into the LIF file.
 
 HP-41CL_update.rb (or HP-41CL_update.py) takes HP-41 ROM files from a folder named "roms" and adds those to a LIF file that can be mounted by pyILPer. The pyILPer is a Java program that can mount LIF files so that an HP-41 can access that file via a PILbox. The "roms" folder must reside in the same folder as the HP-41CL_update.rb (or HP-41CL_update.py) program. The file names of the ROMs to be updated must be prefixed with the HP-41CL address so that the FOCAL program knows where in flash to update the ROMs (only the first three hex numbers are inserted at the beginning of the file name).
 
