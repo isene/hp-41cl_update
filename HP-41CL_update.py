@@ -37,8 +37,8 @@ hepax       = opts.hepax
 
 # Initialize variables
 romscheme   = {}
-roms1       = ""
-roms2       = ""
+index       = ""
+z           = ""
 
 # Create a function to flatten dictionaries (What? No inbuilt method like in Ruby?)
 def flatten(dic):
@@ -86,20 +86,17 @@ for filename in os.listdir(romdir):
     else:
         continue
 
-# Split the romlist if it is larger than 256 entries (64 blocks) (includes "empty entries")
-# Create and add the romlist as an XM ascii file to the LIF image
-if len(romscheme) > 64:
-    roms1 = flatten(dict(romscheme.items()[64:]))
-    roms2 = flatten(dict(romscheme.items()[:64]))
-    file = open(romdir + "/roms2.txt","w") 
-    file.write(roms2)
-    os.system("cat " + romdir + "/roms2.txt | textlif -r 0 ROMS2 | lifput " + basedir + "/cl_update.lif")
-else:
-    roms1 = flatten(romscheme)
+# Create and add the romlist as an XM ascii file to the LIF image (called "INDEX")
+index = flatten(romscheme)
+file = open(romdir + "/index.txt","w")
+file.write(index)
+os.system("cat " + romdir + "/index.txt | textlif -r 0 INDEX | lifput " + basedir + "/cl_update.lif")
 
-file = open(romdir + "/roms1.txt","w")
-file.write(roms1)
-os.system("cat " + romdir + "/roms1.txt | textlif -r 0 ROMS1 | lifput " + basedir + "/cl_update.lif")
+# Create a tiny file, "Z" that contains the size of INDEX in # of XM regs
+z = str(int((len(index) + 2) / 7 + 1))
+file = open(romdir + "/z.txt","w")
+file.write(z)
+os.system("cat " + romdir + "/z.txt | textlif -r 0 Z | lifput " + basedir + "/cl_update.lif")
 
 # Clean up
 if hepax:

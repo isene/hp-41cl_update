@@ -10,25 +10,24 @@ You need the following to run this update solution:
 - The pyILPer program (https://github.com/bug400/pyilper)
 - The "41CL Update Functions -3B" module (http://www.systemyde.com/hp41/software.html)
 - The HEPAX module (for running the "Initialization process" - see below)
+- The AMC_OS/X module if you import modules via the HEPAX READROM function (optional)
 
 ## DESCRIPTION
-There are two alternative programs on the PC side, both doing exactly the same: "HP-41CL_update.rb" is the Ruby version, while "HP-41CL_update.py" is the Python equivalent. There is one FOCAL program on the HP-41CL side, "FUPDATE". HP-41CL_update.rb/HP-41CL_update.py uses Lifutils to format and put ROMs and index file(s) into the LIF file.
+There are two alternative programs on the PC side, both doing exactly the same: "HP-41CL_update.rb" is the Ruby version, while "HP-41CL_update.py" is the Python equivalent. There is one FOCAL program on the HP-41CL side, "FUPDATE". HP-41CL_update.rb/HP-41CL_update.py uses Lifutils to format and put ROMs and an index file into the LIF file. There is also an optional HFUPDAT program on the HP-41CL side to read roms via the HEPAX READROM function.
 
-HP-41CL_update.rb (or HP-41CL_update.py) takes HP-41 ROM files from a folder named "roms" and adds those to a LIF file that can be mounted by pyILPer. The pyILPer is a Java program that can mount LIF files so that an HP-41 can access that file via a PILbox. The "roms" folder must reside in the same folder as the HP-41CL_update.rb (or HP-41CL_update.py) program. The file names of the ROMs to be updated must be prefixed with the HP-41CL address so that the FOCAL program knows where in flash to update the ROMs (only the first three hex numbers are inserted at the beginning of the file name).
+HP-41CL_update.rb (or HP-41CL_update.py) takes HP-41 ROM files from a folder named "roms" and adds those to a LIF file that can be mounted by pyILPer. The pyILPer is a Java program that can mount LIF files so that an HP-41 can access that file via a PILbox. The "roms" folder must reside in the same folder as the HP-41CL_update.rb (or HP-41CL_update.py) program unless you specify another folder via the "-r" (or "--romdir") option. The file names of the ROMs to be updated must be prefixed with the HP-41CL target address so that the FOCAL program knows where in flash to update the ROMs (only the first three hex numbers are added at the beginning of the file name).
 
-Example: You want to update the ISENE.ROM on your HP-41CL. The ISENE.ROM should go to the location "0C9", therefore you rename the rom to 0C9ISENE.ROM and drop it into the folder called "roms". You run HP-41CL_update.rb (or HP-41CL_update.py) and you get a LIF imge called cl_update.lif in the same directory as the HP-41CL_update.rb (or HP-41CL_update.py) program. Mount this LIF file in pyILPer and run the FUPDATE program on the HP-41CL. See example rom directory, ROMS1.txt and cl_update.lif.
+Example: You want to update the ISENE.ROM on your HP-41CL. The ISENE.ROM should go to the location "0C9", therefore you rename the rom to 0C9ISENE.ROM and drop it into the folder called "roms". You run HP-41CL_update.rb (or HP-41CL_update.py) and you get a LIF image called cl_update.lif in the same directory as the HP-41CL_update.rb (or HP-41CL_update.py) program. Mount this LIF file in pyILPer and run the FUPDATE program on the HP-41CL. See example rom directory, index.txt and cl_update.lif. There is also a file, "z.txt" that that only contains the size of the index.txt file in HP-41 XM registers.
 
-Included is also a ROM (CLILUP.ROM) that includes two routines from Håkan Thörngren; RDROM16 (to read 16 bits roms from Mass Storage, i.e. LIF files) and WRROM16 (to write 16 bit roms to Mass Storage). These functions are needed to read and write "modern" HP-41CL roms such as the IMDB. Old roms only used 10 bits and HEPAX compressed these roms by stripping the other 6 bits. You can therefore read and write old 10-bit roms to and from Mass Storage LIF files using HEPAX's READROM and WRTROM). The CLILUP rom is such a 10 bit rom and you must use the HEPAX READROM to load this module onto your HP-41CL so that it can be used to load both 10 bit and 16 bit roms. In order to load the CLILUP.ROM, run HP-41CL_update.rb with the option -x (HP-41CL_update.rb -x) to push the rom into the cl_update.lif file as a HEPAX SDATA file (a 10 bit rom where the other 6 bits are stripped). On the HP-41CL you must then plug a HEPAX RAM page onto one of the HP-41 pages and read the rom into that HP-41 page using the HEPAX READROM function. See the HP-41CL manual for how to plug HEPAX RAM pages into an HP-41 page.
+Included is also a ROM (CLILUP.ROM) that includes two routines from Håkan Thörngren; RDROM16 (to read 16 bits roms from Mass Storage, i.e. LIF files) and WRROM16 (to write 16 bit roms to Mass Storage). These functions are needed to read and write "modern" HP-41CL roms such as the IMDB. Old roms only used 10 bits and HEPAX compressed these roms by stripping the other 6 bits. You can also read and write old 10-bit roms to and from Mass Storage LIF files using HEPAX's READROM and WRTROM). The CLILUP rom is such a 10 bit rom and you must use the HEPAX READROM to load this module onto your HP-41CL so that it can be used to load both 10 bit and 16 bit roms. 
 
 Running the HP-41CL_update.rb will...
 
-![Alt text](docs/2017-11-17-224051_693x136_scrot.png?raw=true "Top Dir")
+![Alt text](docs/2017-11-30-150349_956x304_scrot.png?raw=true "Top Dir")
 
-...take all the ROMs in the "roms" directory, and adds them to the LIF image, "cl_update.lif", including the index file, "roms1.txt" which contains the needed info used by the HP-41 FOCAL program, "FUPDATE.41" to actually update the CL flash. The "roms1.txt" looks like this:
+...take all the ROMs in the "roms" directory, and adds them to the LIF image, "cl_update.lif", including the "index.txt" file which contains the needed info used by the HP-41 FOCAL program, "FUPDATE.41" to actually update the CL flash. The "index.txt" looks like this:
 
-![Alt text](docs/2017-11-17-224116_690x460_scrot.png?raw=true "roms Dir")
-
-If you want to update more than 256 ROMs at a time, the index will split into two files, "roms1.txt" and "roms2.txt" in order for each index file to fit into the HP-41CL's XM memory. The FOCAL program, FUPDATE will run through "roms1.txt" before checking if there is a "roms2.txt" and run that if it exists.
+![Alt text](docs/2017-11-30-150423_956x231_scrot.png?raw=true "roms Dir")
 
 ## GETTING YOU UP AND RUNNING IN THE FIRST PLACE
 Now what do you do if you have no serial cable to your HP-41CL and only a PILbox connection? How do you even get the CLILUP module loaded onto your calculator? Fear not, there is a simple initialization procedure. Just do these simple steps:
@@ -46,7 +45,7 @@ HP-41CL_update.rb [-hvrx] [--help, --version, --romdir, --hepax]
 HP-41CL_update.py [-hrx] [--help, --version, --romdir, --hepax]
 
 ## OPTIONS
--x, --hepax  Add the ROM(s) into the LIF image as a HEPAX SDATA file. Must be read into the HP-41CL using the HEPAX "READROM" function.
+-x, --hepax  Add the ROM(s) into the LIF image as a HEPAX SDATA file. Must be read into the HP-41CL using HFUPDAT function.
 
 -r, --romdir  Specify the "roms" directory/folder for the rom files. Default is the "roms" folder where the HP-41CL_update.rb resides.
 

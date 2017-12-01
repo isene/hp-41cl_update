@@ -3,7 +3,7 @@
 
 require 'getoptlong'
 
-prgmversion = 0.5
+prgmversion = 0.6
 
 def help
 puts <<HELPTEXT
@@ -80,8 +80,8 @@ opts.each do |opt, arg|
 end
 
 romscheme = Hash.new
-roms1 = ""
-roms2 = ""
+index = ""
+z	  = ""
 
 # Create LIF image and initialize
 `touch #{basedir}/cl_update.lif`
@@ -118,28 +118,20 @@ Dir.foreach(romdir) do |dir_entry|
 end
 
 romscheme = romscheme.sort
+index	  = romscheme.flatten.join("\n")
 
-# Split the romlist if it is larger than 256 entries (includes "empty entries")
-if romscheme.size > 256
-	largelist = romscheme.insert(256,"---").flatten.join("\n").split("---\n")
-	roms1 = largelist[0]
-	roms2 = largelist[1]
-else
-	roms1 = romscheme.flatten.join("\n")
-end
+# Create and add the romlist as an XM ascii file to the LIF image (called "INDEX")
+File.write("#{romdir}/index.txt", index)
+`cat #{romdir}/index.txt | textlif -r 0 INDEX | lifput #{basedir}/cl_update.lif`
 
-# Create and add the romlist as an XM ascii file to the LIF image
-File.write("#{romdir}/roms1.txt", roms1)
-`cat #{romdir}/roms1.txt | textlif -r 0 ROMS1 | lifput #{basedir}/cl_update.lif`
-# If the romlist is large and split into two, write and save also the second part
-if roms2 != ""
-	File.write("#{romdir}/roms2.txt", roms2) 
-	`cat #{romdir}/roms2.txt | textlif -r 0 ROMS2 | lifput #{basedir}/cl_update.lif`
-end
+# Create a tiny file, "Z" that contains the size of INDEX in # of XM regs
+z = ((index.length + 2) / 7 + 1).to_i.to_s
+File.write("#{romdir}/z.txt", z)
+`cat #{romdir}/z.txt | textlif -r 0 Z | lifput #{basedir}/cl_update.lif`
 
 # Clean up
 `rm #{romdir}/*.sda` if hepax
 
 # End message
-puts "ROMs added to cl_update.lif. Check roms1.txt (and roms2.txt if more than 256 roms added) for all entries added."
+puts "ROMs added to cl_update.lif. Check index.txt for all entries added.\n\n"
 
