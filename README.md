@@ -9,7 +9,7 @@ You need the following to run this update solution:
 - Lifutils (https://github.com/bug400/lifutils)
 - The pyILPer program (https://github.com/bug400/pyilper)
 - The "41CL Update Functions -3B" module (http://www.systemyde.com/hp41/software.html)
-- The HEPAX module (for running the "Initialization process" - see below)
+- The HEPAX module - for running the "Initialization process" (see below) or for reading HEPAX compressed ROMs
 - The AMC_OS/X module if you import modules via the HEPAX READROM function (optional)
 
 ## DESCRIPTION

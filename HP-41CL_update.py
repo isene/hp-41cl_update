@@ -103,5 +103,5 @@ if hepax:
     os.system("rm " + romdir + "/*.sda")
 
 # End message
-print "ROMs added to cl_update.lif. Check roms1.txt (and roms2.txt if more than 256 roms added) for all entries added.\n"
+print "ROMs added to cl_update.lif. Check index.txt for all entries added.\n"
 
