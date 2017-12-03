@@ -3,7 +3,7 @@
 
 require 'getoptlong'
 
-prgmversion = 0.6
+prgmversion = 1.0
 
 def help
 puts <<HELPTEXT
