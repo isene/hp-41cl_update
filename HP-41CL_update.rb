@@ -26,6 +26,8 @@ DESCRIPTION
 	Example: Rename ISENE.ROM to 0C9ISENE.ROM (as the rom should be placed
 	in the address 0C9000 in the HP-41CL flash.
 
+	Use FUPDATE from the CLILUP rom to read the roms into your HP-41CL flash memory.
+
     pyILPer: https://github.com/bug400/pyilper
     PILbox:  http://www.jeffcalc.hp41.eu/hpil/#pilbox
 
@@ -35,7 +37,7 @@ OPTIONS
 		Default is the "roms" folder where the HP-41CL_update.rb resides
 	-x, --hepax
 		Add the ROM(s) into the LIF image as a HEPAX SDATA file
-		Must be read into the HP-41CL using the HEPAX "READROM" function
+		Use HFUPDAT from the CLILUP rom to read the roms into your HP-41CL flash memory
     -h, --help
     	Show this help text
     -v, --version
