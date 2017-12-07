@@ -3,7 +3,7 @@
 
 require 'getoptlong'
 
-prgmversion = 1.0
+prgmversion = 1.1
 
 def help
 puts <<HELPTEXT
@@ -12,19 +12,23 @@ NAME
     HP-41CL_update.rb - A tool to update ROMS on the HP-41CL calculator
 
 SYNOPSIS
-    HP-41CL_update.rb [-hv] [long-options]
+    HP-41CL_update.rb [-rxvh] [long-options]
 
 DESCRIPTION
 	HP-41CL_update.rb takes HP-41 ROM files from a folder named "roms" and
 	adds those to a LIF file that can be mounted by pyILPer. The pyILPer
 	is a Java program that can mount LIF files so that an HP-41 can access
 	that file via a PILbox. The "roms" folder must reside in the same
-	folder as the HP-41CL_update.rb program.
+	folder as the HP-41CL_update.rb program unless you specify another "roms"
+	folder via the -r (or --romdir) option..
 
 	The ROM names must be prefixed with the first three hexadecimal
 	numbers of the HP-41CL flash adress where you want the rom to reside.
 	Example: Rename ISENE.ROM to 0C9ISENE.ROM (as the rom should be placed
 	in the address 0C9000 in the HP-41CL flash.
+
+	HP-41CL_update.rb creates a file, "cl_update.lif" in the "roms" folder
+	that you mount in pyILPer and connect to the HP-41CL via the PILbox.
 
 	Use FUPDATE from the CLILUP rom to read the roms into your HP-41CL flash memory.
 
@@ -58,9 +62,8 @@ opts = GetoptLong.new(
     [ "--version",  "-v", GetoptLong::NO_ARGUMENT ]
 )
 
-basedir = File.expand_path(File.dirname(__FILE__))
-romdir  = basedir + "/roms"
-hepax	= false
+romdir   = File.join(File.expand_path(File.dirname(__FILE__)), "roms")
+hepax	 = false
 
 opts.each do |opt, arg|
   case opt
@@ -81,24 +84,26 @@ opts.each do |opt, arg|
   end
 end
 
-romscheme = Hash.new
-index = ""
-z	  = ""
-
-# Create LIF image and initialize
-`touch #{basedir}/cl_update.lif`
-`lifinit -m hdrive16 #{basedir}/cl_update.lif 520`										# Max ROMS is 512
-
 if not Dir.exists?(romdir)
 	puts "No such roms directory:", romdir
 	exit
 end
 
+lifimage = File.join(romdir, "cl_update.lif")
+
+romscheme = Hash.new
+index = ""
+z	  = ""
+
+# Create LIF image and initialize - max ROMS is 496
+`lifinit -m hdrive16 #{lifimage} 520`
+
 Dir.foreach(romdir) do |dir_entry|
 	if dir_entry =~ /\.rom$/i and File.size(romdir + "/" + dir_entry) == 8192
+		romfile  = File.join(romdir, dir_entry)											# Full path to rom
 		romentry = dir_entry.sub(/\..*$/, '').upcase									# e.g. "0C9ISENE"
-		romname = romentry.sub(/^.../, '')												# "ISENE"
-		romname = romname.gsub(/[^0-9A-Z]/, '')[0..7]									# Remove non-alphanumerinc characters, max 8 chars
+		romname  = romentry.sub(/^.../, '')												# "ISENE"
+		romname  = romname.gsub(/[^0-9A-Z]/, '')[0..7]									# Remove non-alphanumerinc characters, max 8 chars
 		romlocation = romentry[0..2]													# "0C9"
 		romblock = ((romlocation.to_i(16) / 8).to_i * 8).to_s(16).rjust(3, "0").upcase	# "0C8"
 		next if romblock.to_i(16) == 0 or romblock.to_i(16) >= 504						# Drop bogus files. And no updating system or single rom area
@@ -110,12 +115,7 @@ Dir.foreach(romdir) do |dir_entry|
 		romscheme[romblockname][romplace] = romname
 
 		# Convert the ROM and add it to the LIF file with system commands (using "backticks")
-		if hepax
-			`cat #{romdir}/#{dir_entry} | rom41hx #{romname} > #{romdir}/#{romname}.sda`
-			`lifput #{basedir}/cl_update.lif #{romdir}/#{romname}.sda`
-		else
-			`cat #{romdir}/#{dir_entry} | rom41lif #{romname} | lifput #{basedir}/cl_update.lif`
-		end
+		hepax ? `rom41hx #{romname} < #{romfile} | lifput #{lifimage}` : `rom41lif #{romname} < #{romfile} | lifput #{lifimage}`
 	end
 end
 
@@ -123,16 +123,13 @@ romscheme = romscheme.sort
 index	  = romscheme.flatten.join("\n")
 
 # Create and add the romlist as an XM ascii file to the LIF image (called "INDEX")
-File.write("#{romdir}/index.txt", index)
-`cat #{romdir}/index.txt | textlif -r 0 INDEX | lifput #{basedir}/cl_update.lif`
+File.write(File.join(romdir, "index.txt"), index)
+`textlif -r 0 INDEX < #{File.join(romdir, "index.txt")} | lifput #{lifimage}`
 
 # Create a tiny file, "Z" that contains the size of INDEX in # of XM regs
 z = ((index.length + 2) / 7 + 1).to_i.to_s
-File.write("#{romdir}/z.txt", z)
-`cat #{romdir}/z.txt | textlif -r 0 Z | lifput #{basedir}/cl_update.lif`
-
-# Clean up
-`rm #{romdir}/*.sda` if hepax
+File.write(File.join(romdir, "z.txt"), z)
+`textlif -r 0 Z < #{File.join(romdir, "z.txt")} | lifput #{lifimage}`
 
 # End message
 puts "ROMs added to cl_update.lif. Check index.txt for all entries added.\n\n"

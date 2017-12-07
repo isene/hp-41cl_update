@@ -1,5 +1,5 @@
 # HP-41CL_update
-A Linux tool to update ROMS on the HP-41CL calculator via HP-IL.
+A tool to update ROMS on the HP-41CL calculator via HP-IL.
 
 ## DEPENDENCIES
 You need the following to run this update solution:
@@ -16,19 +16,19 @@ You need the following to run this update solution:
 ## DESCRIPTION
 There is one program on the PC side, "HP-41CL_update.rb" and two FOCAL programs on the HP-41CL side, "FUPDATE" and "HFUPDAT". HP-41CL_update.rb uses Lifutils to format and put ROMs and an index file into the LIF file. FUPDATE takes uncompressed 16-bit roms from the LIF image file and loads them onto your HP-41CL. The HFUPDAT takes HEPAX compressed roms and loads them onto your HP-41CL.
 
-HP-41CL_update.rb takes HP-41 ROM files from a folder named "roms" and adds those to a LIF file ("cl_update.lif") that can be mounted by pyILPer. The pyILPer is a Java program that can mount LIF files so that an HP-41 can access that file via a PILbox. The "roms" folder must reside in the same folder as the HP-41CL_update.rb program unless you specify another folder via the "-r" (or "--romdir") option. The file names of the ROMs to be updated must be prefixed with the HP-41CL target address so that the FOCAL program knows where in flash to update the ROMs (only the first three hex numbers are added at the beginning of the file name).
+HP-41CL_update.rb takes HP-41 ROM files from a folder named "roms" and adds those to a LIF file ("cl_update.lif") in the roms folder that can be mounted by pyILPer. The pyILPer is a Java program that can mount LIF files so that an HP-41 can access that file via a PILbox. The "roms" folder must reside in the same folder as the HP-41CL_update.rb program unless you specify another folder via the "-r" (or "--romdir") option. The file names of the ROMs to be updated must be prefixed with the HP-41CL target address so that the FOCAL program knows where in flash to update the ROMs (only the first three hex numbers are added at the beginning of the file name).
 
- Example: You want to update the ISENE.ROM on your HP-41CL. The ISENE.ROM should go to the location "0C9", therefore you rename the rom to 0C9ISENE.ROM and drop it into the folder called "roms". You run HP-41CL_update.rb and you get a LIF image called cl_update.lif in the same directory as the HP-41CL_update.rb program. Mount this LIF file in pyILPer and run the FUPDATE program on the HP-41CL. See example rom directory, index.txt and cl_update.lif. There is also a file, "z.txt" that that only contains the size of the index.txt file (in number of HP-41 XM registers).
+ Example: You want to update the ISENE.ROM on your HP-41CL. The ISENE.ROM should go to the location "0C9", therefore you rename the rom to 0C9ISENE.ROM and drop it into the folder called "roms". You run HP-41CL_update.rb and you get a LIF image called cl_update.lif in the roms folder. Mount this LIF file in pyILPer and run the FUPDATE program on the HP-41CL. See example rom directory, index.txt and cl_update.lif. There is also a file, "z.txt" that that only contains the size of the index.txt file (in number of HP-41 XM registers).
 
 Included is also a ROM (CLILUP.ROM) that includes two routines from Håkan Thörngren; RDROM16 (to read 16 bits roms from Mass Storage, i.e. LIF files) and WRROM16 (to write 16 bit roms to Mass Storage). These functions are needed to read and write "modern" HP-41CL roms such as the IMDB. Old roms only used 10 bits and HEPAX compressed these roms by stripping the other 6 bits. You can also read and write old 10-bit roms to and from Mass Storage LIF files using HEPAX's READROM and WRTROM).
 
 Running the HP-41CL_update.rb will...
 
-![Alt text](docs/2017-11-30-150349_956x304_scrot.png?raw=true "Top Dir")
+![Alt text](docs/img1.png?raw=true "Top Dir")
 
 ...take all the ROMs in the "roms" directory, and add them to the LIF image, "cl_update.lif", including the "index.txt" file which contains the needed info used by the HP-41 FOCAL program, "FUPDATE.41" to actually update the CL flash. You can also see the file, "z.txt" (containing the size of the index file). The "index.txt" looks like this:
 
-![Alt text](docs/2017-11-30-150423_956x231_scrot.png?raw=true "roms Dir")
+![Alt text](docs/img2.png?raw=true "roms Dir")
 
 ## GETTING YOU UP AND RUNNING IN THE FIRST PLACE
 Now what do you do if you have no serial cable to your HP-41CL and only a PILbox connection? How do you even get the CLILUP module loaded onto your calculator? Fear not, there is a simple initialization procedure. Just do these simple steps:
