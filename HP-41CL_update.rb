@@ -63,12 +63,12 @@ opts = GetoptLong.new(
 )
 
 romdir   = File.join(File.expand_path(File.dirname(__FILE__)), "roms")
-hepax	 = false
+lifpgm	 = "rom41lif"
 
 opts.each do |opt, arg|
   case opt
 	when "--hepax"
-	  hepax = true
+	  lifpgm = "rom41hx"
     when "--romdir"
 	  if not ARGV[0]
 		puts "No roms dir specified."
@@ -115,7 +115,7 @@ Dir.foreach(romdir) do |dir_entry|
 		romscheme[romblockname][romplace] = romname
 
 		# Convert the ROM and add it to the LIF file with system commands (using "backticks")
-		hepax ? `rom41hx #{romname} < #{romfile} | lifput #{lifimage}` : `rom41lif #{romname} < #{romfile} | lifput #{lifimage}`
+		`#{lifpgm} #{romname} < #{romfile} | lifput #{lifimage}`
 	end
 end
 
