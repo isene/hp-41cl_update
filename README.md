@@ -47,6 +47,17 @@ The FUPDATE program loads uncompressed 16-bit roms (the roms put into the LIF im
 
 The HFUPDAT program loads HEPAX compressed 10-bit roms (the roms put into the LIF image file when you run HP-41CL_update.rb with the "-x" (or "--hepax") option. HFUPDAT will first format HP-41CL RAM pages #830 - #837 with the HEPAX template (from flash page #0B9) and plug the ones needed into page 15 of your HP-41CL and then use the HEPAX function READROM to get the rom from the LIF image file. To skip the initial copying of the HEPAX template (if those pages are already HEPAX pages from before), you can set flag 02 before XEQ "HFUPDAT".
 
+## EASY UPDATE OF ROMS
+I have provided a full set of ROM images for easy update of your HP-41CL to the 2017-12-02 release (see http://www.systemyde.com/hp41/index.html). In the directory "all_roms" you will find the file "mem_ref.txt". It details all the roms available for addresses 0x000 - 0x1EF. Addresses 0x1F0 - 0x1FF are reserved for your personal use (the original content of those two blocks are described at the bottom of the mem_ref.txt and supplied in the sub-directory "Original". In any case, HP-41CL_update.rb will only cater for addresses 0x008 - 0x1F7. Outside this range must be updated manually.
+
+The rom file names are in the format required by HP-41CL_update.rb (with first three characters in the file name being the flash address). I have also opted to make the rest of the file name equal to the rom ID used by the Image Database (IMDB). This makes it very easy to see what roms goes where.
+
+Simply drop any of the roms you want to update into your "roms" directory, run HP-41CL_update.rb and mount the resulting cl_update.lif and run FUPDATE on your calculator.
+
+Or - if you want to update absolutely all roms to the 2017-12-02 release, there is also a full cl_update.lif in the all_roms directory that you can mount via pyILPer and run FUPDATE on your HP-41CL and wait for several hours :-)
+
+I have also provided a VIM syntax file for easy handling of mem_ref.txt ("hp41clmemref.vim" in the all_roms directory along with mem_ref.txt).
+
 ## USAGE
 
 ### SYNOPSIS
