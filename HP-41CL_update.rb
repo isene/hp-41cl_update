@@ -3,7 +3,7 @@
 
 require 'getoptlong'
 
-prgmversion = 1.1
+prgmversion = 1.2
 
 def help
 puts <<HELPTEXT
@@ -99,16 +99,17 @@ z	  = ""
 `lifinit -m hdrive16 #{lifimage} 520`
 
 Dir.foreach(romdir) do |dir_entry|
-	if dir_entry =~ /\.rom$/i and File.size(romdir + "/" + dir_entry) == 8192
-		romfile  = File.join(romdir, dir_entry)											# Full path to rom
-		romentry = dir_entry.sub(/\..*$/, '').upcase									# e.g. "0C9ISENE"
-		romname  = romentry.sub(/^.../, '')												# "ISENE"
-		romname  = romname.gsub(/[^0-9A-Z]/, '')[0..7]									# Remove non-alphanumerinc characters, max 8 chars
-		romlocation = romentry[0..2]													# "0C9"
-		romblock = ((romlocation.to_i(16) / 8).to_i * 8).to_s(16).rjust(3, "0").upcase	# "0C8"
-		next if romblock.to_i(16) == 0 or romblock.to_i(16) >= 504						# Drop bogus files. And no updating system or single rom area
-		romplace = romlocation.to_i(16) - romblock.to_i(16)								# 1 (0C9 - 0C8)
-		romblockname = romblock.ljust(6, "0")											# "0C8000"
+	if dir_entry =~ /\.rom$/i and File.size(File.join(romdir, dir_entry)) == 8192
+		romfile     = File.join(romdir, dir_entry)											# Full path to rom
+		romentry    = dir_entry.sub(/\..*$/, '').upcase										# e.g. "0C9ISENE"
+		romname     = romentry.sub(/^.../, '')												# "ISENE"
+		romname     = romname.gsub(/[^0-9A-Z]/, '')[0..7]									# Remove non-alphanumerinc characters, max 8 chars
+		romname		= "R" + romname if romname =~ /^\d/										# Lifutils can't handle file names starting with a digit
+		romlocation = romentry[0..2]														# "0C9"
+		romblock    = ((romlocation.to_i(16) / 8).to_i * 8).to_s(16).rjust(3, "0").upcase	# "0C8"
+		next if romblock.to_i(16) == 0 or romblock.to_i(16) >= 504							# Drop bogus files. And no updating system or single rom area
+		romplace = romlocation.to_i(16) - romblock.to_i(16)									# 1 (0C9 - 0C8)
+		romblockname = romblock.ljust(6, "0")												# "0C8000"
 
 		# Create romblock sections and add a "*" to empty rom locations
 		romscheme[romblockname] = Array.new(8, "*") if not romscheme.assoc(romblockname)
