@@ -11,7 +11,6 @@ You need the following to run this update solution:
 - The "41CL Extreme Functions" module aka "YFNX" (http://www.systemyde.com/hp41/software.html)
 - The "41CL Update Functions -3B" module (http://www.systemyde.com/hp41/software.html)
 - The HEPAX module - for running the "Initialization process" (see below) or for reading HEPAX compressed ROMs
-- The AMC_OS/X module if you import modules via the HEPAX READROM function (optional)
 
 ## DESCRIPTION
 There is one program on the PC side, "HP-41CL_update.rb" and two FOCAL programs on the HP-41CL side, "FUPDATE" and "HFUPDAT". HP-41CL_update.rb uses Lifutils to format and put ROMs and an index file into the LIF file. FUPDATE takes uncompressed 16-bit roms from the LIF image file and loads them onto your HP-41CL. The HFUPDAT takes HEPAX compressed roms and loads them onto your HP-41CL.
@@ -43,9 +42,11 @@ Now what do you do if you have no serial cable to your HP-41CL and only a PILbox
 ## FUPDATE and HFUPDAT
 The FOCAL programs FUPDATE and HFUPDAT loads roms from the LIF image, "cl_update.lif" (mounted via the PILbox) and loads them onto your HP-41CL.
 
-The FUPDATE program loads uncompressed 16-bit roms (the roms put into the LIF image file when you run HP-41CL_update.rb without any options). FUPDATE will first copy the flash sector to be updated into HP-41CL RAM pages #830 - #837 and then read roms and write them directly to the specified RAM page. 
+The FUPDATE program loads uncompressed 16-bit roms (the roms put into the LIF image file when you run HP-41CL_update.rb without any options). FUPDATE will first copy the flash sector to be updated into HP-41CL RAM pages #810 - #817 and then read roms and write them directly to the specified RAM page before erasing the flash sector and copy the RAM pages #810 - #817 back to that flash sector.
 
-The HFUPDAT program loads HEPAX compressed 10-bit roms (the roms put into the LIF image file when you run HP-41CL_update.rb with the "-x" (or "--hepax") option. HFUPDAT will first format HP-41CL RAM pages #830 - #837 with the HEPAX template (from flash page #0B9) and plug the ones needed into page 15 of your HP-41CL and then use the HEPAX function READROM to get the rom from the LIF image file. To skip the initial copying of the HEPAX template (if those pages are already HEPAX pages from before), you can set flag 02 before XEQ "HFUPDAT".
+The HFUPDAT program loads HEPAX compressed 10-bit roms (the roms put into the LIF image file when you run HP-41CL_update.rb with the "-x" (or "--hepax") option. HFUPDAT will first format HP-41CL RAM pages #810 - #817 with the HEPAX template (from flash page #0B9) and plug the ones needed into page 15 of your HP-41CL and then use the HEPAX function READROM to get the rom from the LIF image file. To skip the initial copying of the HEPAX template (if those pages are already HEPAX pages from before), you can set flag 02 before XEQ "HFUPDAT" for faster execution time.
+
+FUPDATE and HFUPDAT will abort if it discovers that your calculator is low on battery. Three tones will sound and "ABORT:LOW BAT" will show in the display. In ALPHA you will have the program's version number if it aborted immediately, or it will have the next address block that it was about to do an YFERASE on if it discovered a low battery condition in the middle of the program.
 
 ## EASY UPDATE OF ROMS
 I have provided a full set of ROM images for easy update of your HP-41CL to the 2017-12-02 release (see http://www.systemyde.com/hp41/index.html). In the directory "all_roms" you will find the file "mem_ref.txt". It details all the roms available for addresses 0x000 - 0x1EF. Addresses 0x1F0 - 0x1FF are reserved for your personal use (the original content of those two blocks are described at the bottom of the mem_ref.txt and supplied in the sub-directory "Original". In any case, HP-41CL_update.rb will only cater for addresses 0x008 - 0x1F7. Outside this range must be updated manually.
