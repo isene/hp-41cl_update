@@ -3,7 +3,7 @@ A tool to update ROMS on the HP-41CL calculator via HP-IL.
 
 ## DEPENDENCIES
 You need the following to run this update solution:
-- A PC with Linux, MAC OS/X or BSD system
+- A PC with Linux, MAC OS/X or BSD system with the programming language Ruby installed
 - An HP-41CL calculator (http://www.systemyde.com/hp41/index.html)
 - A PILbox (http://www.jeffcalc.hp41.eu/hpil/#pilbox)
 - Lifutils (https://github.com/bug400/lifutils)

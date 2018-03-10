@@ -558,9 +558,9 @@ ADR   ID   File Name      XR#  Rom Name                            CRC Check   R
 1EE        PERIOD2.ROM    14   (HEPAX RAM only) Periodic Table, p2 0x23A57B1A
 1EF        PERIOD3.ROM    16   (HEPAX RAM only) Periodic Table, p3 0x395E9D7C
 ---------------------------------------------------------------------------------------
-1F0                                                                
-1F1  
-1F2  
+1F0  GEI8  GEIR.ROM       23  
+1F1  AMA8  AMASTRO.ROM    24  
+1F2  DST8  DSTAT.ROM      10  
 1F3   
 1F4  LADY  LADYBUG1.ROM   16   Ladybug ROM (HP-16C for 41)                                                           
 1F5        LADYBUG2.ROM        Ladybug page 2
