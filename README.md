@@ -76,6 +76,5 @@ HP-41CL_update.rb [-hvrx] [--help, --version, --romdir, --hepax]
 ## THANKS
 Thanks and great appreciation goes to Håkan Thörngren for the MCODE routines and for assembling the CLILUP.ROM and to Joachim Siebold for adding features to his LIFUTILS making it possible to add 16-bit roms to LIF image files.
 
-## COPYRIGHT:
-Copyright 2017, Geir Isene (www.isene.com).  This program is released under the GNU General Public lisence v2.  For the full lisence text see: http://www.gnu.org/copyleft/gpl.html.
-
+## License
+This software is released into the Public Domain.
