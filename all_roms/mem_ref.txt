@@ -561,7 +561,7 @@ ADR   ID   File Name      XR#  Rom Name                            CRC Check   R
 1F0  GEI8  GEIR.ROM       23  
 1F1  AMA8  AMASTRO.ROM    24  
 1F2  DST8  DSTAT.ROM      10  
-1F3   
+1F3  SWR8  SWORDS.ROM     24   
 1F4  LADY  LADYBUG1.ROM   16   Ladybug ROM (HP-16C for 41)                                                           
 1F5        LADYBUG2.ROM        Ladybug page 2
 1F6  LDY4  OS4.ROM             Ladybug page 4                                                       

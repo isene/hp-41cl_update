@@ -67,19 +67,19 @@ lifpgm	 = "rom41lif"
 
 opts.each do |opt, arg|
   case opt
-	when "--hepax"
-	  lifpgm = "rom41hx"
+		when "--hepax"
+			lifpgm = "rom41hx"
     when "--romdir"
-	  if not ARGV[0]
-		puts "No roms dir specified."
-		exit
-	  end
-	  romdir = ARGV[0]
+			if not ARGV[0]
+				puts "No roms dir specified."
+				exit
+			end
+			romdir = ARGV[0]
     when "--help"
       help
       exit
     when "--version"
-	  puts "\nHP-41CL_update.rb version: " + prgmversion.to_s + "\n\n"
+			puts "\nHP-41CL_update.rb version: " + prgmversion.to_s + "\n\n"
       exit
   end
 end
