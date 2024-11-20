@@ -3,7 +3,7 @@
 
 require 'getoptlong'
 
-prgmversion = 1.2
+prgmversion = 1.3
 
 def help
 puts <<HELPTEXT
@@ -84,7 +84,7 @@ opts.each do |opt, arg|
   end
 end
 
-if not Dir.exists?(romdir)
+if not Dir.exist?(romdir)
 	puts "No such roms directory:", romdir
 	exit
 end
