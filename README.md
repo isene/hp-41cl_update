@@ -1,4 +1,10 @@
 # HP-41CL_update
+
+[![HP-41](https://img.shields.io/badge/HP--41-Calculator-orange)](https://en.wikipedia.org/wiki/HP-41C)
+[![License](https://img.shields.io/badge/License-Public%20Domain-brightgreen.svg)](https://unlicense.org/)
+[![GitHub stars](https://img.shields.io/github/stars/isene/hp-41cl_update.svg)](https://github.com/isene/hp-41cl_update/stargazers)
+[![Stay Amazing](https://img.shields.io/badge/Stay-Amazing-blue.svg)](https://isene.org)
+
 A tool to update ROMS on the HP-41CL calculator via HP-IL.
 
 ## DEPENDENCIES
