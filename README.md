@@ -7,6 +7,7 @@
 [![Stay Amazing](https://img.shields.io/badge/Stay-Amazing-blue.svg)](https://isene.org)
 
 <img src="img/hp41cl_logo.svg" align="left" width="150" height="150"> A tool to update ROMS on the HP-41CL calculator via HP-IL.
+<br clear="left"/>
 
 ## DEPENDENCIES
 You need the following to run this update solution:
